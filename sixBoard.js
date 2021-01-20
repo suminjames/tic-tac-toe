@@ -91,6 +91,7 @@ function checkRemainingBoxes() {
         }
     });
 }
+
 function getHorizontalPattern() {
     let increaseBy = 0;
     let matchingPattern = [];
@@ -156,13 +157,24 @@ function getWinningPattern() {
 }
 
 function checkWinningPattern() {
-    getWinningPattern();
-    winningPattern.forEach(function (pattern) {
-        if (boxes[pattern[0]].innerHTML == boxes[pattern[1]].innerHTML && boxes[pattern[0]].innerHTML == boxes[pattern[2]].innerHTML && boxes[pattern[0]].innerHTML == boxes[pattern[3]].innerHTML && boxes[pattern[0]].innerHTML == boxes[pattern[4]].innerHTML && boxes[pattern[0]].innerHTML == boxes[pattern[5]].innerHTML && boxes[pattern[0]].innerHTML != "") {
-            win = true
+    for (let pattern of winningPattern) {
+        let sameElement = false;
+        let initialElement = boxes[pattern[0]].innerHTML;
+        for (let i = 1; i < rowCount; i++) {
+            let nextElement = boxes[pattern[i]].innerHTML;
+            if (initialElement == nextElement && initialElement != "") {
+                sameElement = true;
+                initialElement = nextElement
+            } else {
+                sameElement = false;
+                break;
+            }
         }
-    });
-
+        if (sameElement) {
+            win = true;
+            break;
+        }
+    }
 }
 
 // declare winner(show the winner name)
@@ -213,6 +225,8 @@ function handleClick(box) {
 
 // start game
 function startGame() {
+    getWinningPattern();
+
     boxes.forEach(function (box) {
         changePlayerInputSign();
         handleClick(box)
