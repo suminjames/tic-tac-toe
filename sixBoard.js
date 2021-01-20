@@ -1,9 +1,9 @@
-var threeSquareBoard = document.querySelector('.threeSquareBoard');
-var boxes = threeSquareBoard.querySelectorAll('.box');
+var sixSquareBoard = document.querySelector('.sixSquareBoard');
+var boxes = sixSquareBoard.querySelectorAll('.box');
 
-var playerOne = document.querySelector('.playerOne');
-var playerTwo = document.querySelector('.playerTwo');
-var retryBtn = document.querySelector('.retryBtn');
+var playerOne = sixSquareBoard.querySelector('.playerOne');
+var playerTwo = sixSquareBoard.querySelector('.playerTwo');
+var retryBtn = sixSquareBoard.querySelector('.retryBtn');
 
 var player = {'X': 'Player One', 'O': 'Player Two'};
 var playerOneSign = "X";
@@ -12,12 +12,15 @@ var moveMadeCount = 0;
 var playerInputSign;
 var win = false;
 
-var winner = document.querySelector('.winner');
+var winner = sixSquareBoard.querySelector('.winner');
 var winnerName = winner.querySelector('.winnerName');
-var draw = document.querySelector('.draw');
+var draw = sixSquareBoard.querySelector('.draw');
 
-var maxMove = 9;
-var minWinnerCheckMove = 4;
+var maxMove = 36;
+var minWinnerCheckMove = 10;
+var rowCount = 6;
+
+var winningPattern = [];
 
 // toggle turn to show whose turn is next
 function togglePlayerActiveTurn(showPlayer, hidePlayer) {
@@ -69,7 +72,7 @@ function resetBoard() {
 
 // remove active circle or player turn circle after game is completed
 function removeActiveStatus() {
-    document.querySelectorAll('.activeCircle').forEach(function (circle) {
+    sixSquareBoard.querySelectorAll('.activeCircle').forEach(function (circle) {
         circle.classList.add('invisible');
     });
 }
@@ -89,16 +92,89 @@ function checkRemainingBoxes() {
     });
 }
 
-// logic to see if there is a win
-function checkWinningPattern() {
-    var winningPattern = [[0, 1, 2], [0, 4, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [2, 4, 6], [3, 4, 5], [6, 7, 8]];
-
-    winningPattern.forEach(function (pattern) {
-        if (boxes[pattern[0]].innerHTML == boxes[pattern[1]].innerHTML && boxes[pattern[0]].innerHTML == boxes[pattern[2]].innerHTML && boxes[pattern[0]].innerHTML != "") {
-            win = true
+function getHorizontalPattern() {
+    let increaseBy = 0;
+    let matchingPattern = [];
+    for (let i = 0; i < rowCount; i++) {
+        let horizontalMatchPattern = [];
+        for (let row = 0; row < rowCount; row++) {
+            horizontalMatchPattern.push(row + increaseBy);
         }
-    });
+        increaseBy += rowCount;
+        // console.log(horizontalMatchPattern);
+        matchingPattern.push(horizontalMatchPattern)
+    }
+    // console.log(matchingPattern);
+    return matchingPattern;
+}
 
+function getVerticalPattern() {
+    let matchingPattern = [];
+    for (let i = 0; i < rowCount; i++) {
+        let increaseBy = 0;
+        let verticalMatchPattern = [];
+        for (let row = 0; row < rowCount; row++) {
+            verticalMatchPattern.push(i + increaseBy);
+            increaseBy += rowCount;
+        }
+        // console.log(verticalMatchPattern);
+        matchingPattern.push(verticalMatchPattern)
+    }
+    // console.log(matchingPattern);
+    return matchingPattern;
+}
+
+function getLeftDiagonalPattern() {
+    let increaseBy = 0;
+    let diagonalMatchPattern = [];
+    for (let i = 0; i < rowCount; i++) {
+        diagonalMatchPattern.push(i + increaseBy);
+        increaseBy += rowCount;
+    }
+    // console.log(diagonalMatchPattern);
+    return diagonalMatchPattern;
+}
+
+function getRightDiagonalPattern() {
+    let initial = rowCount - 1;
+    let increaseBy = 0;
+    let diagonalMatchPattern = [];
+    for (let i = 0; i < rowCount; i++) {
+        diagonalMatchPattern.push(initial + increaseBy);
+        increaseBy += rowCount;
+        initial -= 1;
+    }
+
+    // console.log(diagonalMatchPattern);
+    return diagonalMatchPattern;
+}
+
+function getWinningPattern() {
+    winningPattern = getHorizontalPattern().concat(getVerticalPattern());
+    winningPattern.push(getLeftDiagonalPattern());
+    winningPattern.push(getRightDiagonalPattern());
+    console.log(winningPattern)
+}
+
+function checkWinningPattern() {
+    for (let pattern of winningPattern) {
+        let sameElement = false;
+        let initialElement = boxes[pattern[0]].innerHTML;
+        for (let i = 1; i < rowCount; i++) {
+            let nextElement = boxes[pattern[i]].innerHTML;
+            if (initialElement == nextElement && initialElement != "") {
+                sameElement = true;
+                initialElement = nextElement
+            } else {
+                sameElement = false;
+                break;
+            }
+        }
+        if (sameElement) {
+            win = true;
+            break;
+        }
+    }
 }
 
 // declare winner(show the winner name)
@@ -149,6 +225,8 @@ function handleClick(box) {
 
 // start game
 function startGame() {
+    getWinningPattern();
+
     boxes.forEach(function (box) {
         changePlayerInputSign();
         handleClick(box)
