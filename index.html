@@ -19,19 +19,26 @@
             crossorigin="anonymous"></script>
 
 </head>
-<body>
-<div class="container border shadow-sm p-4 rounded mt-5">
+<body class="p-3">
+<header class="d-flex justify-content-center">
     <h3 class="text-center">Tic Tac Toe</h3>
+    <select name="" id="" class="form-control col-2 ml-3 selectGameType">
+        <option value="3">3x3</option>
+        <option value="6">6x6</option>
+    </select>
+</header>
+
+<div class="container-fluid border shadow-sm p-4 rounded mt-3">
 
     <!--three by three board-->
-    <div class="row mt-5 threeSquareBoard d-none">
-        <div class="playerOne col-4 text-center mt-5">
+    <div class="row mt-5 threeSquareBoard d-flex justify-content-around text-center">
+        <div class="playerOne mt-5">
             <h6>Player One</h6>
             <h2>X</h2>
             <div class="bg-success p-4 col-1 rounded-circle mx-auto activeCircle"></div>
         </div>
 
-        <div class="col-4 text-center">
+        <div class="board">
             <div class="col-12 d-flex">
                 <p class="border box"></p>
                 <p class="border box"></p>
@@ -51,37 +58,37 @@
             </div>
         </div>
 
-        <div class="playerTwo col-4 text-center mt-5">
+        <div class="playerTwo mt-5">
             <h6>Player Two</h6>
             <h2>O</h2>
             <div class="bg-success p-4 col-1 rounded-circle mx-auto invisible activeCircle"></div>
         </div>
 
-        <div class="winner text-center d-none mt-4 col-12">
+        <div class="winner d-none mt-4 col-12">
             <p>
                 <span>Winner is:</span>
                 <span class="ml-1 winnerName"></span>
             </p>
         </div>
 
-        <div class="draw text-center d-none mt-4 col-12">
+        <div class="draw d-none mt-4 col-12">
             <p>Draw</p>
         </div>
 
-        <div class="text-center col-12 retryBtn d-none">
+        <div class="col-12 retryBtn d-none">
             <button class="btn btn-danger">Retry</button>
         </div>
     </div>
 
     <!--six by six board-->
-    <div class="row mt-5 sixSquareBoard">
-        <div class="playerOne col-3 text-center mt-5">
+    <div class="row mt-5 sixSquareBoard d-none justify-content-around text-center">
+        <div class="playerOne mt-5">
             <h6>Player One</h6>
             <h2>X</h2>
             <div class="bg-success p-4 col-1 rounded-circle mx-auto activeCircle"></div>
         </div>
 
-        <div class="col-6 text-center">
+        <div class="board">
             <div class="col-12 d-flex">
                 <p class="border box"></p>
                 <p class="border box"></p>
@@ -133,32 +140,32 @@
 
         </div>
 
-        <div class="playerTwo col-3 text-center mt-5">
+        <div class="playerTwo mt-5">
             <h6>Player Two</h6>
             <h2>O</h2>
             <div class="bg-success p-4 col-1 rounded-circle mx-auto invisible activeCircle"></div>
         </div>
 
-        <div class="winner text-center d-none mt-4 col-12">
+        <div class="winner d-none mt-4 col-12">
             <p>
                 <span>Winner is:</span>
                 <span class="ml-1 winnerName"></span>
             </p>
         </div>
 
-        <div class="draw text-center d-none mt-4 col-12">
+        <div class="draw d-none mt-4 col-12">
             <p>Draw</p>
         </div>
 
-        <div class="text-center col-12 retryBtn d-none">
+        <div class="col-12 retryBtn d-none">
             <button class="btn btn-danger">Retry</button>
         </div>
     </div>
 
 
 </div>
-<!--<script src="script.js"></script>-->
-<script src="sixBoard.js"></script>
+<script src="script.js"></script>
+<!--<script src="sixBoard.js"></script>-->
 
 </body>
 </html>
