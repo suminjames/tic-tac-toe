@@ -20,6 +20,8 @@ var maxMove = 36;
 var minWinnerCheckMove = 10;
 var rowCount = 6;
 
+var winningPattern = [];
+
 // toggle turn to show whose turn is next
 function togglePlayerActiveTurn(showPlayer, hidePlayer) {
     var activePlayer = showPlayer.querySelector('.activeCircle');
@@ -89,37 +91,24 @@ function checkRemainingBoxes() {
         }
     });
 }
-
-function checkWinningPattern(pattern) {
-    let patternWin = false;
-    if (boxes[pattern[0]].innerHTML == boxes[pattern[1]].innerHTML && boxes[pattern[0]].innerHTML == boxes[pattern[2]].innerHTML && boxes[pattern[0]].innerHTML == boxes[pattern[3]].innerHTML && boxes[pattern[0]].innerHTML == boxes[pattern[4]].innerHTML && boxes[pattern[0]].innerHTML == boxes[pattern[5]].innerHTML && boxes[pattern[0]].innerHTML != "") {
-        patternWin = true;
-    }
-    return patternWin;
-}
-
-function checkHorizontalWin() {
+function getHorizontalPattern() {
     let increaseBy = 0;
-    let verticalMatchPattern = [];
-    let horizontalWin = false;
+    let matchingPattern = [];
     for (let i = 0; i < rowCount; i++) {
         let horizontalMatchPattern = [];
-        verticalMatchPattern.push(i + increaseBy);
         for (let row = 0; row < rowCount; row++) {
             horizontalMatchPattern.push(row + increaseBy);
         }
         increaseBy += rowCount;
-        if (checkWinningPattern(horizontalMatchPattern)) {
-            horizontalWin = true;
-            break;
-        }
+        // console.log(horizontalMatchPattern);
+        matchingPattern.push(horizontalMatchPattern)
     }
-
-    return horizontalWin;
+    // console.log(matchingPattern);
+    return matchingPattern;
 }
 
-function checkVerticalWin() {
-    let verticalWin = false;
+function getVerticalPattern() {
+    let matchingPattern = [];
     for (let i = 0; i < rowCount; i++) {
         let increaseBy = 0;
         let verticalMatchPattern = [];
@@ -127,34 +116,25 @@ function checkVerticalWin() {
             verticalMatchPattern.push(i + increaseBy);
             increaseBy += rowCount;
         }
-        if (checkWinningPattern(verticalMatchPattern)) {
-            verticalWin = true;
-            break;
-        }
-        console.log(verticalMatchPattern)
+        // console.log(verticalMatchPattern);
+        matchingPattern.push(verticalMatchPattern)
     }
-
-    return verticalWin;
+    // console.log(matchingPattern);
+    return matchingPattern;
 }
 
-function checkLeftDiagonalWin() {
-    let diagonalWin = false;
+function getLeftDiagonalPattern() {
     let increaseBy = 0;
     let diagonalMatchPattern = [];
     for (let i = 0; i < rowCount; i++) {
         diagonalMatchPattern.push(i + increaseBy);
         increaseBy += rowCount;
     }
-    if (checkWinningPattern(diagonalMatchPattern)) {
-        diagonalWin = true;
-    }
-    console.log(diagonalMatchPattern);
-
-    return diagonalWin;
+    // console.log(diagonalMatchPattern);
+    return diagonalMatchPattern;
 }
 
-function checkRightDiagonalWin() {
-    let diagonalWin = false;
+function getRightDiagonalPattern() {
     let initial = rowCount - 1;
     let increaseBy = 0;
     let diagonalMatchPattern = [];
@@ -163,25 +143,26 @@ function checkRightDiagonalWin() {
         increaseBy += rowCount;
         initial -= 1;
     }
-    if (checkWinningPattern(diagonalMatchPattern)) {
-        diagonalWin = true;
-    }
-    console.log(diagonalMatchPattern);
 
-    return diagonalWin;
+    // console.log(diagonalMatchPattern);
+    return diagonalMatchPattern;
 }
 
-// logic to see if there is a win
-function getWinner() {
-    if (checkHorizontalWin()) {
-        win = true;
-    } else if (checkVerticalWin()) {
-        win = true;
-    } else if (checkLeftDiagonalWin()) {
-        win = true;
-    } else if (checkRightDiagonalWin()) {
-        win = true;
-    }
+function getWinningPattern() {
+    winningPattern = getHorizontalPattern().concat(getVerticalPattern());
+    winningPattern.push(getLeftDiagonalPattern());
+    winningPattern.push(getRightDiagonalPattern());
+    console.log(winningPattern)
+}
+
+function checkWinningPattern() {
+    getWinningPattern();
+    winningPattern.forEach(function (pattern) {
+        if (boxes[pattern[0]].innerHTML == boxes[pattern[1]].innerHTML && boxes[pattern[0]].innerHTML == boxes[pattern[2]].innerHTML && boxes[pattern[0]].innerHTML == boxes[pattern[3]].innerHTML && boxes[pattern[0]].innerHTML == boxes[pattern[4]].innerHTML && boxes[pattern[0]].innerHTML == boxes[pattern[5]].innerHTML && boxes[pattern[0]].innerHTML != "") {
+            win = true
+        }
+    });
+
 }
 
 // declare winner(show the winner name)
@@ -194,7 +175,7 @@ function declareWinner(playerSign) {
 function checkWinner() {
     var resetGame = false;
     if (moveMadeCount > minWinnerCheckMove) {
-        getWinner();
+        checkWinningPattern();
 
         if (!win && moveMadeCount == maxMove) {
             draw.classList.remove('d-none');
@@ -239,14 +220,3 @@ function startGame() {
 }
 
 startGame();
-
-
-let initial = rowCount - 1;
-let increaseBy = 0;
-let diagonalMatchPattern = [];
-for (let i = 0; i < rowCount; i++) {
-    diagonalMatchPattern.push(initial + increaseBy);
-    increaseBy += 6;
-    initial -= 1;
-}
-console.log(diagonalMatchPattern);
