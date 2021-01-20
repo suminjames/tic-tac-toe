@@ -77,7 +77,6 @@ function removeActiveStatus() {
 // show retry button
 function showRetryButton() {
     retryBtn.classList.remove('d-none');
-    removeActiveStatus();
     resetBoard();
 }
 
@@ -110,20 +109,20 @@ function declareWinner(playerSign) {
 
 // check winner after certain move
 function checkWinner() {
+    var resetGame = false;
     if (moveMadeCount > minWinnerCheckMove) {
         checkWinningPattern();
 
         if (!win && moveMadeCount == maxMove) {
             draw.classList.remove('d-none');
-            showRetryButton();
-            return false;
+            resetGame = true;
         } else if (win) {
             declareWinner(playerInputSign);
             checkRemainingBoxes();
-            showRetryButton();
-            return false;
+            resetGame = true;
         }
     }
+    return resetGame;
 }
 
 // handle box click event
@@ -136,7 +135,11 @@ function handleClick(box) {
 
             moveMadeCount += 1;
 
-            checkWinner();
+            if (checkWinner()) {
+                showRetryButton();
+                removeActiveStatus();
+                return false;
+            }
 
             changePlayerInputSign();
         }
