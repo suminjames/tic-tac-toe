@@ -42,8 +42,6 @@ function changePlayerInputSign() {
 
 // reset board
 function resetBoard() {
-    retryBtn.classList.remove('d-none');
-
     retryBtn.addEventListener('click', function () {
         boxes.forEach(function (box) {
             box.innerHTML = "";
@@ -69,6 +67,20 @@ function resetBoard() {
     });
 }
 
+// remove active circle or player turn circle after game is completed
+function removeActiveStatus() {
+    document.querySelectorAll('.activeCircle').forEach(function (circle) {
+        circle.classList.add('invisible');
+    });
+}
+
+// show retry button
+function showRetryButton() {
+    retryBtn.classList.remove('d-none');
+    removeActiveStatus();
+    resetBoard();
+}
+
 // make the boxes as checked so that they can not be clicked
 function checkRemainingBoxes() {
     boxes.forEach(function (box) {
@@ -78,40 +90,43 @@ function checkRemainingBoxes() {
     });
 }
 
-// remove active circle or player turn circle after game is completed
-function removeActiveStatus() {
-    document.querySelectorAll('.activeCircle').forEach(function (circle) {
-        circle.classList.add('invisible');
-    })
-}
-
-// declare winner(show the winner name)
-function declareWinner(playerSign) {
-    winner.classList.remove('d-none');
-    winnerName.innerHTML = player[playerSign];
-
-    removeActiveStatus()
-}
-
 // logic to see if there is a win
-function checkWinner(player) {
+function checkWinningPattern() {
     var winningPattern = [[0, 1, 2], [0, 4, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [2, 4, 6], [3, 4, 5], [6, 7, 8]];
 
     winningPattern.forEach(function (pattern) {
         if (boxes[pattern[0]].innerHTML == boxes[pattern[1]].innerHTML && boxes[pattern[0]].innerHTML == boxes[pattern[2]].innerHTML && boxes[pattern[0]].innerHTML != "") {
-
-            declareWinner(player);
-
-            checkRemainingBoxes();
-
-            resetBoard();
-
             win = true
         }
     });
 
 }
 
+// declare winner(show the winner name)
+function declareWinner(playerSign) {
+    winner.classList.remove('d-none');
+    winnerName.innerHTML = player[playerSign] + ' (' + playerSign + ')';
+}
+
+// check winner after certain move
+function checkWinner() {
+    if (moveMadeCount > minWinnerCheckMove) {
+        checkWinningPattern();
+
+        if (!win && moveMadeCount == maxMove) {
+            draw.classList.remove('d-none');
+            showRetryButton();
+            return false;
+        } else if (win) {
+            declareWinner(playerInputSign);
+            checkRemainingBoxes();
+            showRetryButton();
+            return false;
+        }
+    }
+}
+
+// handle box click event
 function handleClick(box) {
     box.addEventListener('click', function () {
         if (!box.classList.contains('checked')) {
@@ -121,15 +136,7 @@ function handleClick(box) {
 
             moveMadeCount += 1;
 
-            if (moveMadeCount > minWinnerCheckMove) {
-                checkWinner(playerInputSign);
-
-                if (!win && moveMadeCount == maxMove) {
-                    draw.classList.remove('d-none');
-                    removeActiveStatus();
-                    resetBoard();
-                }
-            }
+            checkWinner();
 
             changePlayerInputSign();
         }
