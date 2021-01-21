@@ -107,7 +107,7 @@ function initializeGame(board, gameType, minWinnerCheckMove) {
 
     // remove active circle or player turn circle after game is completed
     function removeActiveStatus() {
-        sixSquareBoard.querySelectorAll('.activeCircle').forEach(function (circle) {
+        board.querySelectorAll('.activeCircle').forEach(function (circle) {
             circle.classList.add('invisible');
         });
     }
